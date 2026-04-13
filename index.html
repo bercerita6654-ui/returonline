@@ -51,7 +51,7 @@
     <!-- Notifikasi Copy / Alert -->
     <div id="copyToast" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-5 py-3 rounded-full text-sm font-semibold shadow-2xl transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none z-[100] flex items-center gap-2 border border-gray-700">
         <svg class="w-5 h-5 text-green-400" id="toastIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        <span id="toastText">Notifikasi</span>
+        <span id="toastText">Teks disalin!</span>
     </div>
 
     <!-- Global Upload Loader -->
@@ -164,6 +164,7 @@
                 </button>
             </div>
             
+            <!-- Tombol Keluar Responsif -->
             <button onclick="logout()" title="Keluar dari Aplikasi" class="shrink-0 flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl font-bold text-sm text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all shadow-sm ml-2">
                 <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 <span class="hidden sm:inline">Keluar</span>
@@ -631,7 +632,7 @@
                         Lihat Dashboard Data
                     </button>
                     <button type="button" id="btnInputLagi" class="w-full inline-flex justify-center items-center gap-2 rounded-xl px-6 py-4 bg-white border-2 border-gray-200 text-base font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all">
-                        Input Data Baru
+                        Kembali
                     </button>
                 </div>
             </div>
@@ -639,7 +640,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3afZCYWB4lGr1iL1eu6zQi885rTvc8LzxqVOeV_InTZPAAhKZCb3MMMathUxj_Mk3/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyA6kyMBk5LBHJnVKpPXiC_IjiNcso5lFM_tECeIDu3Fo6yzU5c9CrzNki4V5SnsSrp/exec';
         const CSV_PRODUK_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBfHe-Pua4Y4XigoIs6KW_7s52z58DjClBmFX8d9rtHwFTi1XzXU6B0Nbl88HRf7C6ntdp_7hxGJlQ/pub?gid=1289126120&single=true&output=csv';
 
         let productList = []; 
@@ -937,7 +938,7 @@
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify(dataObj)
-                }).catch(e => console.log('Sinyal dikirim.'));
+                }).catch(e => console.log('Sinyal upload terkirim ke GAS.'));
                 
                 setTimeout(() => {
                     document.getElementById('globalLoader').classList.add('hidden');
@@ -1031,7 +1032,6 @@
                     if(r.value === row['Jenis']) r.checked = true;
                 });
 
-                // Set Tanggal jika format valid (YYYY-MM-DD diperlukan oleh input type=date)
                 try {
                     const dateObj = new Date(row['Waktu Pengeluaran']);
                     if (!isNaN(dateObj.getTime())) {
@@ -1218,7 +1218,6 @@
                 const formData = new FormData(this);
                 const dataObj = Object.fromEntries(formData.entries());
                 
-                // Cek apakah ini mode Edit atau Insert
                 if (editingPengeluaranId !== null) {
                     dataObj.formType = 'edit_data';
                     dataObj.rowIndex = editingPengeluaranId;
@@ -1259,7 +1258,6 @@
                     body: JSON.stringify(dataObj)
                 });
                 
-                // Beri delay untuk Sheet
                 setTimeout(() => {
                     document.getElementById('successModal').classList.remove('hidden');
                     if (editingPengeluaranId !== null) cancelEdit('pengeluaran'); 
@@ -1342,7 +1340,6 @@
                     const formData = new FormData(this);
                     const dataObj = Object.fromEntries(formData.entries());
                     
-                    // Cek mode Edit atau Insert
                     if (editingReturId !== null) {
                         dataObj.formType = 'edit_data';
                         dataObj.rowIndex = editingReturId;
@@ -1419,7 +1416,6 @@
             });
         });
 
-
         // --- IMAGE MODAL LOGIC ---
         function openImageModal(directUrl, originalUrl) {
             const imgObj = document.getElementById('modalImageObj');
@@ -1467,10 +1463,8 @@
             return `<span class="px-2.5 py-1 inline-flex text-[11px] leading-4 font-bold rounded-md border bg-gray-50 text-gray-600 border-gray-200">${type || '-'}</span>`;
         }
 
-        // Tampilkan Status Upload dan Tombol Upload Susulan jika belum ada foto
         function getStatusBukti(fotoUrl, referenceId, type, rowIndex) {
             let userSession = sessionStorage.getItem('returUser');
-            // Hanya user non-acc yang bisa lihat tombol Edit/Hapus
             let actionButtons = '';
             if(userSession !== 'acc') {
                 actionButtons = `
@@ -1580,7 +1574,7 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-center align-top bg-gray-50/30 w-32">
+                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-center align-top bg-gray-50/30">
                         ${statusBuktiHtml}
                     </td>
                 `;
@@ -1614,7 +1608,6 @@
                 if(!isNaN(formattedHarga) && formattedHarga !== '') formattedHarga = 'Rp ' + parseInt(formattedHarga).toLocaleString('id-ID');
                 
                 const rowIndex = row['row_index']; 
-                // Untuk pengeluaran, susulan upload butuh rowIndex sebagai reference
                 const statusBuktiHtml = getStatusBukti(row['URL Foto Bukti'], rowIndex, 'pengeluaran', rowIndex);
 
                 tr.innerHTML = `
@@ -1641,7 +1634,7 @@
                             <span class="text-sm font-bold text-gray-800 capitalize">${row['User / Admin'] || '-'}</span>
                         </div>
                     </td>
-                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-center align-top bg-gray-50/30 w-32">
+                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-center align-top bg-gray-50/30">
                         ${statusBuktiHtml}
                     </td>
                 `;
@@ -1669,7 +1662,6 @@
                 const response = await fetch(`${SCRIPT_URL}?type=${type}`);
                 const data = await response.json();
                 
-                // Cek / Add row_index fallback secara mandiri
                 const totalRows = data.length;
                 data.forEach((row, i) => {
                     row.row_index = row.row_index || (totalRows + 1 - i);
